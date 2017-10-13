@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2000, 2001, 2002, 2003, 2004, 2005, 2008, 2009
- *	The President and Fellows of Harvard College.
+ *      The President and Fellows of Harvard College.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -45,8 +45,8 @@
  */
 struct semaphore {
         char *sem_name;
-	struct wchan *sem_wchan;
-	struct spinlock sem_lock;
+        struct wchan *sem_wchan;
+        struct spinlock sem_lock;
         volatile int sem_count;
 };
 
@@ -74,9 +74,12 @@ void V(struct semaphore *);
  */
 struct lock {
         char *lk_name;
-        // add what you need here
-        // (don't forget to mark things volatile as needed)
+        volatile int held;
+        struct spinlock lock_spinlock;
+        struct wchan * lock_wchan;
+        struct thread *lk_holder;  /* CPU holding this lock. */
 };
+
 
 struct lock *lock_create(const char *name);
 void lock_acquire(struct lock *);
@@ -113,8 +116,9 @@ void lock_destroy(struct lock *);
 
 struct cv {
         char *cv_name;
-        // add what you need here
-        // (don't forget to mark things volatile as needed)
+        volatile int cv_value;
+        struct spinlock cv_lock;
+        struct wchan * cv_wchan;
 };
 
 struct cv *cv_create(const char *name);

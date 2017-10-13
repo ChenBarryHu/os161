@@ -306,7 +306,7 @@ cvtestthread(void *junk, unsigned long num)
 	}
 	V(donesem);
 #ifdef UW
-  thread_exit();
+  	thread_exit();
 #endif
 }
 
